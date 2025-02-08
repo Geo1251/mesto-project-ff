@@ -1,7 +1,7 @@
 import '../pages/index.css'
 import initialCards from './cards.js'
 import {createCard, deleteCard, likeCard} from './card.js';
-import { openPopup, closePopup } from './modal.js';
+import {openPopup, closePopup} from './modal.js';
 
 const placesList = document.querySelector(".places__list");
 const popupTypeImage = document.querySelector(".popup_type_image");
