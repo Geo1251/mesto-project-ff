@@ -1,7 +1,8 @@
-import '../pages/index.css'
-import initialCards from './cards.js'
-import {createCard, deleteCard, likeCard} from './card.js';
-import {openPopup, closePopup} from './modal.js';
+import '../pages/index.css';
+import initialCards from './cards.js';
+import { createCard, deleteCard, likeCard } from './card.js';
+import { openPopup, closePopup } from './modal.js';
+import { enableValidation, clearValidation } from './validation.js';
 
 const placesList = document.querySelector(".places__list");
 const popupTypeImage = document.querySelector(".popup_type_image");
@@ -18,6 +19,15 @@ const newPlaceForm = document.forms['new-place'];
 const newPlaceFormName = newPlaceForm.elements['place-name'];
 const newPlaceFormLink = newPlaceForm.elements.link;
 
+const validationConfig = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__input-error_visible'
+};
+
 function openCard(evt) {
     const popupImage = popupTypeImage.querySelector(".popup__image");
     const popupCaption = popupTypeImage.querySelector(".popup__caption");
@@ -33,9 +43,10 @@ initialCards.forEach((cardData) => {
 });
 
 profileEditBtn.addEventListener('click', () => {
-    openPopup(popupTypeEdit);
+    clearValidation(editProfileForm, validationConfig);
     editProfileFormName.value = profileTitle.textContent;
     editProfileFormDescription.value = profileDescription.textContent;
+    openPopup(popupTypeEdit);
 });
 
 editProfileForm.addEventListener('submit', (evt) => {
@@ -46,6 +57,7 @@ editProfileForm.addEventListener('submit', (evt) => {
 });
 
 profileAddBtn.addEventListener('click', () => {
+    clearValidation(newPlaceForm, validationConfig);
     openPopup(popupTypeNewCard);
 });
 
@@ -58,5 +70,7 @@ newPlaceForm.addEventListener('submit', (evt) => {
     placesList.prepend(newCard);
     closePopup(popupTypeNewCard);
     newPlaceForm.reset();
+    clearValidation(newPlaceForm, validationConfig);
 });
-  
+
+enableValidation(validationConfig);
