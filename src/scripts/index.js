@@ -3,6 +3,7 @@ import initialCards from './cards.js';
 import { createCard, deleteCard, likeCard } from './card.js';
 import { openPopup, closePopup } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
+import { getInitialCards } from './api.js';
 
 const placesList = document.querySelector(".places__list");
 const popupTypeImage = document.querySelector(".popup_type_image");
@@ -74,3 +75,5 @@ newPlaceForm.addEventListener('submit', (evt) => {
 });
 
 enableValidation(validationConfig);
+
+getInitialCards();
