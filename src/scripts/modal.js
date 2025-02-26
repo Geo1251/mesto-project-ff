@@ -26,5 +26,14 @@ function closePopup(popupElement) {
     document.removeEventListener('keydown', escHandler);
     popupElement.removeEventListener('click', clickHandler);
 }
+
+function loadingPopup(popupElement, isLoading) {
+    const popupButton = popupElement.querySelector('.popup__button');
+    if (isLoading) {
+        popupButton.textContent = 'Сохранение...';
+    } else {
+        popupButton.textContent = 'Сохранить';
+    }
+}
   
-export { openPopup, closePopup };
+export { openPopup, closePopup, loadingPopup };

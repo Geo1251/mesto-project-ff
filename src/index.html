@@ -20,7 +20,13 @@
       </header>
       <main class="content">
         <section class="profile page__section">
-          <div class="profile__image"></div>
+          <div class="profile__image">
+            <img
+              src="<%=require('./images/avatar.jpg')%>"
+              alt="Аватар пользователя"
+              class="profile__avatar"
+            />
+          </div>
           <div class="profile__info">
             <h1 class="profile__title">Жак-Ив Кусто</h1>
             <button class="profile__edit-button" type="button"></button>
@@ -106,11 +112,32 @@
           <p class="popup__caption"></p>
         </div>
       </div>
+      <div class="popup popup_type_avatar popup_is-animated">
+        <div class="popup__content">
+          <button type="button" class="popup__close"></button>
+          <h3 class="popup__title">Обновить аватар</h3>
+          <form class="popup__form" name="new-avatar">
+            <input
+              type="url"
+              name="avatar-link"
+              class="popup__input popup__input_type_url"
+              placeholder="Ссылка на картинку"
+              required
+            />
+            <span class="popup__input-error avatar-link-input-error"></span>
+            <button type="submit" class="button popup__button">
+              Сохранить
+            </button>
+          </form>
+        </div>
+      </div>
       <div class="popup popup_type_alert popup_is-animated">
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Вы уверены?</h3>
-          <button type="submit" class="button popup__button">Да</button>
+          <form class="popup__form" name="delete-card">
+            <button type="submit" class="button popup__button">Да</button>
+          </form>
         </div>
       </div>
     </div>
@@ -121,7 +148,10 @@
         <button type="button" class="card__delete-button"></button>
         <div class="card__description">
           <h2 class="card__title"></h2>
-          <button type="button" class="card__like-button"></button>
+          <div class="card__like-container">
+            <button type="button" class="card__like-button"></button>
+            <p class="card__like-counter"></p>
+          </div>
         </div>
       </li>
     </template>

@@ -1,8 +1,8 @@
 import '../pages/index.css';
-import { createCard, deleteCard, likeCard } from './card.js';
-import { openPopup, closePopup } from './modal.js';
+import { createCard, setUserId } from './card.js';
+import { openPopup, closePopup, loadingPopup } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getInitialCards } from './api.js';
+import { getInitialCards, getUserData, updateUserProfile, addNewCard, updateAvatar } from './api.js';
 
 const placesList = document.querySelector(".places__list");
 const popupTypeImage = document.querySelector(".popup_type_image");
@@ -18,6 +18,10 @@ const profileDescription = document.querySelector(".profile__description");
 const newPlaceForm = document.forms['new-place'];
 const newPlaceFormName = newPlaceForm.elements['place-name'];
 const newPlaceFormLink = newPlaceForm.elements.link;
+const popupTypeAvatar = document.querySelector(".popup_type_avatar");
+const avatarEditBtn = document.querySelector(".profile__image");
+const newAvatarForm = document.forms['new-avatar'];
+const profileAvatar = document.querySelector(".profile__avatar");
 
 const validationConfig = {
     formSelector: '.popup__form',
@@ -37,10 +41,15 @@ function openCard(evt) {
     openPopup(popupTypeImage);
 }
 
-getInitialCards()
-  .then(initialCards => {
+Promise.all([getUserData(), getInitialCards()])
+  .then(([userData, initialCards]) => {
+    profileTitle.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    profileAvatar.src = userData.avatar;
+    setUserId(userData._id);
+
     initialCards.forEach((cardData) => {
-        const card = createCard(cardData, deleteCard, likeCard, openCard); 
+        const card = createCard(cardData, openCard); 
         placesList.append(card); 
     });
   })
@@ -57,9 +66,24 @@ profileEditBtn.addEventListener('click', () => {
 
 editProfileForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    profileTitle.textContent = editProfileFormName.value;
-    profileDescription.textContent = editProfileFormDescription.value;
-    closePopup(popupTypeEdit);
+    loadingPopup(popupTypeEdit, true);
+    updateUserProfile(editProfileFormName.value, editProfileFormDescription.value)
+      .then((userData) => {
+        profileTitle.textContent = userData.name;
+        profileDescription.textContent = userData.about;
+        closePopup(popupTypeEdit);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => {
+        loadingPopup(popupTypeEdit, false);
+      });
+});
+
+avatarEditBtn.addEventListener('click', () => {
+    clearValidation(newAvatarForm, validationConfig);
+    openPopup(popupTypeAvatar);
 });
 
 profileAddBtn.addEventListener('click', () => {
@@ -69,14 +93,39 @@ profileAddBtn.addEventListener('click', () => {
 
 newPlaceForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    const newCard = createCard({
-        name: newPlaceFormName.value,
-        link: newPlaceFormLink.value
-    }, deleteCard, likeCard, openCard);
-    placesList.prepend(newCard);
-    closePopup(popupTypeNewCard);
-    newPlaceForm.reset();
-    clearValidation(newPlaceForm, validationConfig);
+    loadingPopup(popupTypeNewCard, true);
+    addNewCard(newPlaceFormName.value, newPlaceFormLink.value)
+      .then((cardData) => {
+        const newCard = createCard(cardData, openCard);
+        placesList.prepend(newCard);
+        closePopup(popupTypeNewCard);
+        newPlaceForm.reset();
+        clearValidation(newPlaceForm, validationConfig);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => {
+        loadingPopup(popupTypeNewCard, false);
+      });
+});
+
+newAvatarForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    loadingPopup(popupTypeAvatar, true);
+    updateAvatar(newAvatarForm.elements['avatar-link'].value)
+      .then((userData) => {
+        profileAvatar.src = userData.avatar;
+        closePopup(popupTypeAvatar);
+        newAvatarForm.reset();
+        clearValidation(newAvatarForm, validationConfig);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => {
+        loadingPopup(popupTypeAvatar, false);
+      });
 });
 
 enableValidation(validationConfig);
