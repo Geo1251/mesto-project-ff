@@ -42,20 +42,20 @@ function openCard(evt) {
 }
 
 Promise.all([getUserData(), getInitialCards()])
-  .then(([userData, initialCards]) => {
-    profileTitle.textContent = userData.name;
-    profileDescription.textContent = userData.about;
-    profileAvatar.src = userData.avatar;
-    setUserId(userData._id);
+    .then(([userData, initialCards]) => {
+        profileTitle.textContent = userData.name;
+        profileDescription.textContent = userData.about;
+        profileAvatar.src = userData.avatar;
+        setUserId(userData._id);
 
-    initialCards.forEach((cardData) => {
-        const card = createCard(cardData, openCard); 
-        placesList.append(card); 
-    });
-  })
-  .catch(error => {
-    console.log(error);
-  });
+        initialCards.forEach((cardData) => {
+            const card = createCard(cardData, openCard); 
+            placesList.append(card); 
+        });
+    })
+    .catch(error => {
+        console.log(error);
+});
 
 profileEditBtn.addEventListener('click', () => {
     clearValidation(editProfileForm, validationConfig);
