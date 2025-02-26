@@ -1,5 +1,4 @@
 import '../pages/index.css';
-import initialCards from './cards.js';
 import { createCard, deleteCard, likeCard } from './card.js';
 import { openPopup, closePopup } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
@@ -38,10 +37,16 @@ function openCard(evt) {
     openPopup(popupTypeImage);
 }
 
-initialCards.forEach((cardData) => {
-    const card = createCard(cardData, deleteCard, likeCard, openCard); 
-    placesList.append(card); 
-});
+getInitialCards()
+  .then(initialCards => {
+    initialCards.forEach((cardData) => {
+        const card = createCard(cardData, deleteCard, likeCard, openCard); 
+        placesList.append(card); 
+    });
+  })
+  .catch(error => {
+    console.error(error);
+  });
 
 profileEditBtn.addEventListener('click', () => {
     clearValidation(editProfileForm, validationConfig);
@@ -75,5 +80,3 @@ newPlaceForm.addEventListener('submit', (evt) => {
 });
 
 enableValidation(validationConfig);
-
-getInitialCards();

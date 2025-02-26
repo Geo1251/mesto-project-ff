@@ -15,5 +15,20 @@ export const getInitialCards = () => {
       return res.json();
     }
     return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+}
+
+export const getUserData = () => {
+  return fetch(`${config.baseUrl}/users/me`, {
+    headers: config.headers
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  })
+  .then(result => {
+    console.log(result)
+  })
 }
