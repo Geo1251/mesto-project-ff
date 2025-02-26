@@ -54,7 +54,7 @@ Promise.all([getUserData(), getInitialCards()])
     });
   })
   .catch(error => {
-    console.error(error);
+    console.log(error);
   });
 
 profileEditBtn.addEventListener('click', () => {
@@ -74,7 +74,7 @@ editProfileForm.addEventListener('submit', (evt) => {
         closePopup(popupTypeEdit);
       })
       .catch(error => {
-        console.error(error);
+        console.log(error);
       })
       .finally(() => {
         loadingPopup(popupTypeEdit, false);
@@ -103,7 +103,7 @@ newPlaceForm.addEventListener('submit', (evt) => {
         clearValidation(newPlaceForm, validationConfig);
       })
       .catch(error => {
-        console.error(error);
+        console.log(error);
       })
       .finally(() => {
         loadingPopup(popupTypeNewCard, false);
@@ -121,7 +121,7 @@ newAvatarForm.addEventListener('submit', (evt) => {
         clearValidation(newAvatarForm, validationConfig);
       })
       .catch(error => {
-        console.error(error);
+        console.log(error);
       })
       .finally(() => {
         loadingPopup(popupTypeAvatar, false);
