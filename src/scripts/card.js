@@ -1,15 +1,4 @@
-import { openPopup, closePopup } from './modal.js';
-import { deleteCard as apiDeleteCard, likeCard as apiLikeCard, unlikeCard as apiUnlikeCard } from './api.js';
-
-const popupTypeAlert = document.querySelector(".popup_type_alert");
-const deleteCardForm = document.forms['delete-card'];
-let userId;
-
-function setUserId(id) {
-    userId = id;
-}
-
-function createCard(cardData, openCard) {
+function createCard(cardData, handleCardClick, handleDeleteClick, handleLikeClick, userId) {
     const cardTemplate = document.getElementById("card-template");
     const cardTemplateClone = cardTemplate.content.cloneNode(true);
 
@@ -30,45 +19,18 @@ function createCard(cardData, openCard) {
       likeButton.classList.add('card__like-button_is-active');
     }
 
-    likeButton.addEventListener('click', () => {
-      if (likeButton.classList.contains('card__like-button_is-active')) {
-        apiUnlikeCard(cardData._id)
-          .then(updatedCard => {
-            likeButton.classList.remove('card__like-button_is-active');
-            likeCounter.textContent = updatedCard.likes.length;
-          })
-          .catch(error => console.error(error));
-      } else {
-        apiLikeCard(cardData._id)
-          .then(updatedCard => {
-            likeButton.classList.add('card__like-button_is-active');
-            likeCounter.textContent = updatedCard.likes.length;
-          })
-          .catch(error => console.error(error));
-      }
-    });
+    likeButton.addEventListener('click', () => handleLikeClick(cardData._id, likeButton, likeCounter));
 
     const deleteButton = card.querySelector(".card__delete-button");
     if (cardData.owner._id !== userId) {
       deleteButton.remove();
     } else {
-      deleteButton.addEventListener("click", () => {
-        openPopup(popupTypeAlert);
-        deleteCardForm.addEventListener("submit", (evt) => {
-          evt.preventDefault();
-          apiDeleteCard(cardData._id)
-            .then(() => {
-              card.remove();
-              closePopup(popupTypeAlert);
-            })
-            .catch(error => console.error(error));
-        }, { once: true });
-      });
+      deleteButton.addEventListener("click", () => handleDeleteClick(cardData._id, card));
     }
 
-    cardImage.addEventListener('click', openCard);
+    cardImage.addEventListener('click', () => handleCardClick(cardData));
 
     return card;
 }
 
-export { createCard, setUserId };
+export { createCard };
