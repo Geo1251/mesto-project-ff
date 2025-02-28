@@ -1,4 +1,24 @@
-function createCard(cardData, handleCardClick, handleDeleteClick, handleLikeClick, userId) {
+import { likeCard as apiLikeCard, unlikeCard as apiUnlikeCard } from './api.js';
+
+function handleLikeClick(cardId, likeButton, likeCounter) {
+    if (likeButton.classList.contains('card__like-button_is-active')) {
+        apiUnlikeCard(cardId)
+            .then(updatedCard => {
+                likeButton.classList.remove('card__like-button_is-active');
+                likeCounter.textContent = updatedCard.likes.length;
+            })
+            .catch(error => console.error(error));
+    } else {
+        apiLikeCard(cardId)
+            .then(updatedCard => {
+                likeButton.classList.add('card__like-button_is-active');
+                likeCounter.textContent = updatedCard.likes.length;
+            })
+            .catch(error => console.error(error));
+    }
+}
+
+function createCard(cardData, handleCardClick, handleDeleteClick, userId) {
     const cardTemplate = document.getElementById("card-template");
     const cardTemplateClone = cardTemplate.content.cloneNode(true);
 
@@ -16,16 +36,16 @@ function createCard(cardData, handleCardClick, handleDeleteClick, handleLikeClic
 
     const likeButton = card.querySelector('.card__like-button');
     if (cardData.likes.some(like => like._id === userId)) {
-      likeButton.classList.add('card__like-button_is-active');
+        likeButton.classList.add('card__like-button_is-active');
     }
 
     likeButton.addEventListener('click', () => handleLikeClick(cardData._id, likeButton, likeCounter));
 
     const deleteButton = card.querySelector(".card__delete-button");
     if (cardData.owner._id !== userId) {
-      deleteButton.remove();
+        deleteButton.remove();
     } else {
-      deleteButton.addEventListener("click", () => handleDeleteClick(cardData._id, card));
+        deleteButton.addEventListener("click", () => handleDeleteClick(cardData._id, card));
     }
 
     cardImage.addEventListener('click', () => handleCardClick(cardData));
@@ -33,4 +53,4 @@ function createCard(cardData, handleCardClick, handleDeleteClick, handleLikeClic
     return card;
 }
 
-export { createCard };
+export { createCard, handleLikeClick };

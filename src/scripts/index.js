@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { createCard } from './card.js';
 import { openPopup, closePopup } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getInitialCards, getUserData, updateUserProfile, addNewCard, updateAvatar, deleteCard as apiDeleteCard, likeCard as apiLikeCard, unlikeCard as apiUnlikeCard } from './api.js';
+import { getInitialCards, getUserData, updateUserProfile, addNewCard, updateAvatar, deleteCard as apiDeleteCard } from './api.js';
 
 const placesList = document.querySelector(".places__list");
 const popupTypeImage = document.querySelector(".popup_type_image");
@@ -53,24 +53,6 @@ function handleDeleteClick(cardId, cardElement) {
     openPopup(popupTypeAlert);
 }
 
-function handleLikeClick(cardId, likeButton, likeCounter) {
-    if (likeButton.classList.contains('card__like-button_is-active')) {
-        apiUnlikeCard(cardId)
-            .then(updatedCard => {
-                likeButton.classList.remove('card__like-button_is-active');
-                likeCounter.textContent = updatedCard.likes.length;
-            })
-            .catch(error => console.error(error));
-    } else {
-        apiLikeCard(cardId)
-            .then(updatedCard => {
-                likeButton.classList.add('card__like-button_is-active');
-                likeCounter.textContent = updatedCard.likes.length;
-            })
-            .catch(error => console.error(error));
-    }
-}
-
 function loadingPopup(popupElement, isLoading) {
     const popupButton = popupElement.querySelector('.popup__button');
     if (isLoading) {
@@ -98,7 +80,7 @@ Promise.all([getUserData(), getInitialCards()])
         userId = userData._id;
 
         initialCards.forEach((cardData) => {
-            const card = createCard(cardData, handleCardClick, handleDeleteClick, handleLikeClick, userId);
+            const card = createCard(cardData, handleCardClick, handleDeleteClick, userId);
             placesList.append(card);
         });
     })
@@ -145,7 +127,7 @@ newPlaceForm.addEventListener('submit', (evt) => {
     loadingPopup(popupTypeNewCard, true);
     addNewCard(newPlaceFormName.value, newPlaceFormLink.value)
         .then((cardData) => {
-            const newCard = createCard(cardData, handleCardClick, handleDeleteClick, handleLikeClick, userId);
+            const newCard = createCard(cardData, handleCardClick, handleDeleteClick, userId);
             placesList.prepend(newCard);
             closePopup(popupTypeNewCard);
             newPlaceForm.reset();
