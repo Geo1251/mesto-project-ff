@@ -1,6 +1,6 @@
 import '../pages/index.css';
-import { createCard } from './card.js';
-import { openPopup, closePopup } from './modal.js';
+import { createCard, handleLikeClick } from './card.js';
+import { openPopup, closePopup, loadingPopup } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
 import { getInitialCards, getUserData, updateUserProfile, addNewCard, updateAvatar, deleteCard as apiDeleteCard } from './api.js';
 
@@ -53,15 +53,6 @@ function handleDeleteClick(cardId, cardElement) {
     openPopup(popupTypeAlert);
 }
 
-function loadingPopup(popupElement, isLoading) {
-    const popupButton = popupElement.querySelector('.popup__button');
-    if (isLoading) {
-        popupButton.textContent = 'Сохранение...';
-    } else {
-        popupButton.textContent = 'Сохранить';
-    }
-}
-
 deleteCardForm.addEventListener("submit", (evt) => {
     evt.preventDefault();
     apiDeleteCard(cardIdToDelete)
@@ -80,7 +71,7 @@ Promise.all([getUserData(), getInitialCards()])
         userId = userData._id;
 
         initialCards.forEach((cardData) => {
-            const card = createCard(cardData, handleCardClick, handleDeleteClick, userId);
+            const card = createCard(cardData, handleCardClick, handleDeleteClick, handleLikeClick, userId);
             placesList.append(card);
         });
     })
@@ -127,7 +118,7 @@ newPlaceForm.addEventListener('submit', (evt) => {
     loadingPopup(popupTypeNewCard, true);
     addNewCard(newPlaceFormName.value, newPlaceFormLink.value)
         .then((cardData) => {
-            const newCard = createCard(cardData, handleCardClick, handleDeleteClick, userId);
+            const newCard = createCard(cardData, handleCardClick, handleDeleteClick, handleLikeClick, userId);
             placesList.prepend(newCard);
             closePopup(popupTypeNewCard);
             newPlaceForm.reset();

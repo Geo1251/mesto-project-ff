@@ -18,7 +18,7 @@ function handleLikeClick(cardId, likeButton, likeCounter) {
     }
 }
 
-function createCard(cardData, handleCardClick, handleDeleteClick, userId) {
+function createCard(cardData, handleCardClick, handleDeleteClick, handleLikeClick, userId) {
     const cardTemplate = document.getElementById("card-template");
     const cardTemplateClone = cardTemplate.content.cloneNode(true);
 
